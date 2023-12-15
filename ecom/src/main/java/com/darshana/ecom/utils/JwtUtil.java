@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    public static final String SECRET = "2413fb3709b05939f04cf2e92f7d0897fc2596f9ad0b8a9ea855c7bfebaae892";
+    public static final String SECRET = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
@@ -34,7 +35,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    private SignatureAlgorithm getSignKey() {
+    private Key getSignKey() {
         byte[] keybytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keybytes);
     }
@@ -49,7 +50,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parsePlaintextJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
