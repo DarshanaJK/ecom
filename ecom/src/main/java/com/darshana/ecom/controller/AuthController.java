@@ -63,6 +63,8 @@ public class AuthController {
                     .toString()
             );
 
+            response.addHeader("Access-Control-Expose-Headers", "Authorization");
+            response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PING-OTHER, Origin, " + "X-Requested-With, Content-Type, Accept, X-Custom-header ");
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
 
         }
@@ -71,7 +73,7 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest){
         if (authService.hasUserWithEmail(signupRequest.getEmail())){
-            return new ResponseEntity<>("User already exista", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("User already exist", HttpStatus.NOT_ACCEPTABLE);
         }
 
         UserDto userDto = authService.createUser(signupRequest);
