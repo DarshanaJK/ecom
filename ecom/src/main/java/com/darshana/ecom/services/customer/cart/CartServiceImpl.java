@@ -1,6 +1,8 @@
 package com.darshana.ecom.services.customer.cart;
 
 import com.darshana.ecom.dto.AddProductInCartDto;
+import com.darshana.ecom.dto.CartItemsDto;
+import com.darshana.ecom.dto.OrderDto;
 import com.darshana.ecom.entity.CartItems;
 import com.darshana.ecom.entity.Order;
 import com.darshana.ecom.entity.Product;
@@ -15,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -61,11 +65,24 @@ public class CartServiceImpl implements CartService{
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(cart);
 
-
-
             }else{
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User or Product not found");
             }
         }
+    }
+
+    public OrderDto getCartByUserId(Long userId){
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(userId, OrderStatus.Pending);
+        List<CartItemsDto> cartItemsDtoList = activeOrder.getCartItems().stream().map(CartItems::getCartDto).collect(Collectors.toList());
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setAmount(activeOrder.getAmount());
+        orderDto.setId(activeOrder.getId());
+        orderDto.setOrderStatus(activeOrder.getOrderStatus());
+        orderDto.setDiscount(activeOrder.getDiscount());
+        orderDto.setTotalAmount(activeOrder.getTotalAmount());
+        orderDto.setCartItems(cartItemsDtoList);
+
+        return orderDto;
     }
 }
