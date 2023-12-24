@@ -2,6 +2,7 @@ package com.darshana.ecom.controller.customer;
 
 import com.darshana.ecom.dto.AddProductInCartDto;
 import com.darshana.ecom.dto.OrderDto;
+import com.darshana.ecom.dto.PlaceOrderDto;
 import com.darshana.ecom.exceptions.ValidationException;
 import com.darshana.ecom.services.customer.cart.CartService;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,15 @@ public class CartController {
     @PostMapping("/addition")
     public ResponseEntity<OrderDto> increaseProductQuantity(@RequestBody AddProductInCartDto addProductInCartDto){
         return ResponseEntity.status(HttpStatus.CREATED).body(cartService.increaseProductQuantity(addProductInCartDto));
+    }
+
+    @PostMapping("/deduction")
+    public ResponseEntity<OrderDto> decreaseProductQuantity(@RequestBody AddProductInCartDto addProductInCartDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.decreaseProductQuantity(addProductInCartDto));
+    }
+
+    @PostMapping("/placeOrder")
+    public ResponseEntity<OrderDto> placeOrder(@RequestBody PlaceOrderDto placeOrderDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartService.placeOrder(placeOrderDto));
     }
 }
