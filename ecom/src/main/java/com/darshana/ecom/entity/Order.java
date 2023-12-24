@@ -1,5 +1,6 @@
 package com.darshana.ecom.entity;
 
+import com.darshana.ecom.dto.OrderDto;
 import com.darshana.ecom.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -40,7 +41,28 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "coupon_id", referencedColumnName = "id")
+    private Coupon coupon;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<CartItems> cartItems;
+
+    public OrderDto getOrderDto(){
+        OrderDto orderDto = new OrderDto();
+
+        orderDto.setId(id);
+        orderDto.setOrderDescription(orderDescription);
+        orderDto.setAddress(address);
+        orderDto.setTrackingId(trackingId);
+        orderDto.setAmount(amount);
+        orderDto.setDate(date);
+        orderDto.setOrderStatus(orderStatus);
+        orderDto.setUserName(user.getName());
+        if (coupon != null){
+            orderDto.setCouponName(coupon.getName());
+        }
+        return orderDto;
+    }
 
 }
