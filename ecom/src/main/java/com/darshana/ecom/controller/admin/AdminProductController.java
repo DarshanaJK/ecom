@@ -1,7 +1,9 @@
 package com.darshana.ecom.controller.admin;
 
+import com.darshana.ecom.dto.FAQDto;
 import com.darshana.ecom.dto.ProductDto;
 import com.darshana.ecom.services.admin.adminproduct.AdminProductService;
+import com.darshana.ecom.services.admin.faq.FAQService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import java.util.List;
 public class AdminProductController {
 
     private final AdminProductService adminProductService;
+
+    private final FAQService faqService;
 
     @GetMapping("/product")
     public ResponseEntity<ProductDto> addProduct(@ModelAttribute ProductDto productDto) throws IOException {
@@ -43,5 +47,10 @@ public class AdminProductController {
         }
         return ResponseEntity.notFound().build();
 
+    }
+
+    @PostMapping("/faq/{productId}")
+    public ResponseEntity<FAQDto> postFAQ(@PathVariable Long productId, @RequestBody FAQDto faqDto){
+        return ResponseEntity.status(HttpStatus.CREATED).body(faqService.postFAQ(productId, faqDto));
     }
 }
