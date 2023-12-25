@@ -2,12 +2,16 @@ package com.darshana.ecom.services.customer.review;
 
 import com.darshana.ecom.dto.OrderedProductsResponseDto;
 import com.darshana.ecom.dto.ProductDto;
-import com.darshana.ecom.entity.CartItems;
-import com.darshana.ecom.entity.Order;
+import com.darshana.ecom.dto.ReviewDto;
+import com.darshana.ecom.entity.*;
 import com.darshana.ecom.repository.OrderRepository;
+import com.darshana.ecom.repository.ProductRepository;
+import com.darshana.ecom.repository.ReviewRepository;
+import com.darshana.ecom.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +21,12 @@ import java.util.Optional;
 public class ReviewServiceImpl implements ReviewService{
 
     private final OrderRepository orderRepository;
+
+    private final ProductRepository productRepository;
+
+    private final UserRepository userRepository;
+
+    private final ReviewRepository reviewRepository;
 
     public OrderedProductsResponseDto getOrderedProductsDetailsByOrderId(Long orderId){
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
@@ -41,4 +51,23 @@ public class ReviewServiceImpl implements ReviewService{
         }
         return orderedProductsResponseDto;
     }
+
+    public ReviewDto giveReview(ReviewDto reviewDto) throws IOException {
+        Optional<Product> optionalProduct = productRepository.findById(reviewDto.getProductId());
+        Optional<User> optionalUser = userRepository.findById(reviewDto.getUserId());
+
+        if (optionalProduct.isPresent() && optionalUser.isPresent()){
+            Review review = new Review();
+
+            review.setRating(reviewDto.getRating());
+            review.setDescription(reviewDto.getDescription());
+            review.setUser(optionalUser.get());
+            review.setProduct(optionalProduct.get());
+            review.setImg(reviewDto.getImg().getBytes());
+
+            return reviewRepository.save(review).getDto();
+        }
+        return null;
+    }
+
 }
